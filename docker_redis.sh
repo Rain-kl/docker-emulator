@@ -32,7 +32,7 @@ services:
       - "6379:6379"
     volumes:
       - ./redis/redis.conf:/etc/redis/redis.conf:ro
-      - ./redis:/data
+      - ./redis/data:/data
     command: redis-server /etc/redis/redis.conf --appendonly yes
     restart: always
 EOF

@@ -33,8 +33,16 @@ services:
     volumes:
       - ./redis/redis.conf:/etc/redis/redis.conf:ro
       - ./redis/data:/data
+
     command: redis-server /etc/redis/redis.conf --appendonly yes
     restart: always
+    networks:
+      - redis_network  # 将服务连接到定义的网络
+
+networks:
+  redis_network:  # 定义网络
+    driver: bridge
+
 EOF
   docker-compose up -d
   mv docker-compose.yml redis

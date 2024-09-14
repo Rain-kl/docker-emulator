@@ -4,7 +4,7 @@
 
 ---
 # 目录
-
+- [脚本](#脚本)
 - [Docker安装](#1-docker安装)
   - [Linux](#11-linux)
 - [Pull镜像](#2-pull镜像)
@@ -12,7 +12,7 @@
 
 # 脚本
 
-- 快速启动一个图像linux系统
+- 快速启动一个图形化的ubuntu系统，通过浏览器访问
 
 > 默认密码：password
 ```shell

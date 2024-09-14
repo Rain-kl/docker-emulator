@@ -19,7 +19,10 @@
 sudo curl -fsSL https://raw.githubusercontent.com/Rain-kl/docker-script/main/novnc_ubuntu.sh | bash 
 ```
 
-
+- 部署redis服务
+```shell
+sudo curl -fsSL https://raw.githubusercontent.com/Rain-kl/docker-script/main/docker_redis.sh | bash 
+```
 
 
 ## Docker安装

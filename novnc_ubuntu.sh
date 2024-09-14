@@ -1,24 +1,9 @@
 #!/bin/bash
 
-install_docker(){
-  # 询问用户是否继续
-  read -p "Do you want to download from a Chinese mirror address? (y/n) (default n): " choice
-
-  # 根据用户输入执行不同的操作
-  case "$choice" in
-    y|Y ) bash <(curl -sSL https://linuxmirrors.cn/docker.sh);;
-    * ) curl -sSL https://get.docker.com/ | sh;;
-  esac
-}
 
 install_novnc_ubuntu(){
-  read -p "is docker installed ? (default y)" choice
+  check_docker
 
-  # 根据用户输入执行不同的操作
-  case "$choice" in
-    n|N ) curl -sSL https://get.docker.com/ | sh;;
-    * ) echo "--continue--" ;;
-  esac
   touch docker-compose.yml
   cat <<EOF > docker-compose.yml
 version: '3.5'
@@ -46,26 +31,68 @@ EOF
   docker-compose up -d
 }
 
+install_docker(){
+  # 询问用户是否继续
+  # shellcheck disable=SC2162
+  read -p "Do you want to download from a Chinese mirror address? (y/n) (default n): " choice
+
+  # 根据用户输入执行不同的操作
+  case "$choice" in
+    y|Y ) bash <(curl -sSL https://linuxmirrors.cn/docker.sh);;
+    * ) curl -sSL https://get.docker.com/ | sh;;
+  esac
+}
+
+check_docker(){
+  # 检查docker是否安装
+  if ! command -v docker &> /dev/null; then
+    echo "docker could not be found"
+    install_docker
+  else
+    echo "docker is installed"
+  fi
+}
 
 
 # Function to install packages on Ubuntu/Debian
-install_ubuntu() {
-  sudo apt update
-  sudo apt install -y curl docker-compose
+install_ont_ubuntu() {
+    # 检查docker-compose是否安装
+  if ! command -v docker-compose &> /dev/null; then
+    echo "docker-compose could not be found"
+    sudo apt update
+    sudo apt install -y curl docker-compose
+  else
+    echo "docker-compose is installed"
+  fi
+
   install_novnc_ubuntu
 }
 
 # Function to install packages on Alpine
-install_alpine() {
-  sudo apk update
-  sudo apk add curl docker-compose
+install_ont_alpine() {
+  # 检查docker-compose是否安装
+  if ! command -v docker-compose &> /dev/null; then
+    echo "docker-compose could not be found"
+    sudo apk update
+    sudo apk add curl docker-compose
+  else
+    echo "docker-compose is installed"
+  fi
+
   install_novnc_ubuntu
 }
 
 # Function to install packages on CentOS/RHEL
-install_centos() {
-  sudo yum -y update
-  sudo yum install -y curl docker-compose
+install_ont_centos() {
+  # 检查docker-compose是否安装
+  if ! command -v docker-compose &> /dev/null; then
+    echo "docker-compose could not be found"
+    sudo yum -y update
+    sudo yum install -y curl docker-compose
+  else
+    echo "docker-compose is installed"
+  fi
+
   install_novnc_ubuntu
 }
 
@@ -74,13 +101,13 @@ if [ -f /etc/os-release ]; then
   . /etc/os-release
   case "$ID" in
     ubuntu|debian)
-      install_ubuntu
+      install_ont_ubuntu
       ;;
     alpine)
-      install_alpine
+      install_ont_alpine
       ;;
     centos|rhel|fedora)
-      install_centos
+      install_ont_centos
       ;;
     *)
       echo "Unsupported Linux distribution: $ID"
